@@ -13,6 +13,7 @@
 {.name="<=",                  .type=func, .argc=2, .args={number, number},      .rets=true, .ret=boolean},
 {.name="==",                  .type=func, .argc=2, .args={any, any},            .rets=true, .ret=boolean},
 {.name="!=",                  .type=func, .argc=2, .args={any, any},            .rets=true, .ret=boolean},
+{.name="^",                   .type=func, .argc=2, .args={number, number},      .rets=true, .ret=number},
 {.name="match",               .type=func, .argc=2, .args={any, any},            .rets=true, .ret=boolean},
 {.name="if",                  .type=func, .argc=3, .args={boolean, any, any},   .rets=true, .ret=any},
 {.name="when",                .type=func, .argc=2, .args={boolean, block},      .rets=false, .needs_stack=true},
@@ -95,6 +96,37 @@
 {.name="unbox",               .type=func, .argc=1, .args={box}, .rets=true, .ret=any},
 {.name="set",                 .type=func, .argc=2, .args={box, any}, .rets=false},
 {.name="debug",               .type=func, .argc=0, .rets=false},
+
+/* math */
+{.name="sind",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="cosd",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="tand",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="sin",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="cos",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="tan",                   .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="exp",                    .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="log",                    .type=func, .argc=2, .args={number, number},      .rets=true, .ret=number},
+{.name="ln",                     .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="asind",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="acosd",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="atand",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="asin",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="acos",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="atan",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="sinhd",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="coshd",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="tanhd",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+{.name="sinh",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="cosh",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+{.name="tanh",                  .type=func, .argc=1, .args={number},      .rets=true, .ret=number},
+
+
 
 /* Builtin stack operations */
 {.name="drop",                .type=stack_op, .stack_shuffle=&drop_register},

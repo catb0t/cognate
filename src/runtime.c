@@ -191,6 +191,9 @@ static ANY box_symbol(SYMBOL);
 static BLOCK unbox_block(ANY);
 static ANY box_block(BLOCK);
 
+static NUMBER radians_to_degrees(NUMBER);
+static NUMBER degrees_to_radians(NUMBER);
+
 static void init(int, char **);
 static void cleanup(void);
 static void push(ANY);
@@ -213,6 +216,7 @@ static NUMBER VAR(P)(NUMBER, NUMBER);
 static NUMBER VAR(M)(NUMBER, NUMBER);
 static NUMBER VAR(D)(NUMBER, NUMBER);
 static NUMBER VAR(S)(NUMBER, NUMBER);
+static NUMBER VAR(C)(NUMBER, NUMBER);
 static NUMBER VAR(modulo)(NUMBER, NUMBER);
 static NUMBER VAR(sqrt)(NUMBER);
 static NUMBER VAR(random)(NUMBER, NUMBER);
@@ -283,6 +287,31 @@ static LIST VAR(takeDwhile)(BLOCK,LIST);
 static LIST VAR(discard)(NUMBER,LIST);
 static BLOCK VAR(remember)(BLOCK);
 static BOOLEAN VAR(all)(BLOCK,LIST);
+
+static NUMBER VAR(sind)(NUMBER);
+static NUMBER VAR(cosd)(NUMBER);
+static NUMBER VAR(tand)(NUMBER);
+static NUMBER VAR(sin)(NUMBER);
+static NUMBER VAR(cos)(NUMBER);
+static NUMBER VAR(tan)(NUMBER);
+
+static NUMBER VAR(exp)(NUMBER);
+static NUMBER VAR(log)(NUMBER, NUMBER);
+static NUMBER VAR(ln)(NUMBER);
+
+static NUMBER VAR(asind)(NUMBER);
+static NUMBER VAR(acosd)(NUMBER);
+static NUMBER VAR(atand)(NUMBER);
+static NUMBER VAR(asin)(NUMBER);
+static NUMBER VAR(acos)(NUMBER);
+static NUMBER VAR(atan)(NUMBER);
+
+static NUMBER VAR(sinhd)(NUMBER);
+static NUMBER VAR(coshd)(NUMBER);
+static NUMBER VAR(tanhd)(NUMBER);
+static NUMBER VAR(sinh)(NUMBER);
+static NUMBER VAR(cosh)(NUMBER);
+static NUMBER VAR(tanh)(NUMBER);
 
 static const char *lookup_type(cognate_type);
 static _Bool compare_lists(LIST, LIST);
@@ -1235,6 +1264,14 @@ static NUMBER VAR(S)(NUMBER a, NUMBER b)
 	return r;
 }
 
+static NUMBER VAR(C)(NUMBER a, NUMBER b)
+{
+	const double r = pow(b, a);
+	if unlikely(is_nan(*(long*)&r))
+		throw_error_fmt("Raising %.14g to the power of %.14g yeilds invalid result", b, a);
+	return r;
+}
+
 static NUMBER VAR(modulo)(NUMBER a, NUMBER b)
 {
 	const double r = b - a * floor(b / a);
@@ -1937,6 +1974,202 @@ static void VAR(debug)()
 	debugger_step();
 #endif
 }
+
+/* math */
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+// helper for math functions
+static inline NUMBER radians_to_degrees(NUMBER a)
+{
+	return a * (180 / M_PI);
+}
+
+static inline NUMBER degrees_to_radians(NUMBER a)
+{
+	return a * (M_PI / 180);
+}
+
+static NUMBER VAR(sind)(NUMBER a)
+{
+	double rad = degrees_to_radians(a);
+	double sinrad = sin(rad);
+	if unlikely(is_nan(*(long*)&sinrad))
+		     throw_error_fmt("sind(%.14g) yields invalid result", a);
+	return sinrad;
+}
+
+static NUMBER VAR(cosd)(NUMBER a)
+{
+	double rad = degrees_to_radians(a);
+	double cosrad = cos(rad);
+	if unlikely(is_nan(*(long*)&cosrad))
+		     throw_error_fmt("cosd(%.14g) yields invalid result", a);
+	return cosrad;
+}
+
+static NUMBER VAR(tand)(NUMBER a)
+{
+	double rad = degrees_to_radians(a);
+	double tanrad = tan(rad);
+	if unlikely(is_nan(*(long*)&tanrad))
+		     throw_error_fmt("tand(%.14g) yields invalid result", a);
+	return tanrad;
+}
+
+static NUMBER VAR(sin)(NUMBER a)
+{
+	double tmp = sin(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("sin(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(cos)(NUMBER a)
+{
+	double tmp = cos(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("cos(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(tan)(NUMBER a)
+{
+	double tmp = tan(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("tan(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(exp)(NUMBER a)
+{
+	double tmp = exp(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("exp(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(log)(NUMBER a, NUMBER b)
+{
+	/* This uses the following formula:
+	   log_x(y) =
+	   	    log_e(y) / log_e(x)
+	*/
+	const double top = log(b);
+	const double bottom = log(a);
+	if unlikely(is_nan(*(long*)&top) || is_nan(*(long*)&bottom))
+		     throw_error_fmt("Log base %.14g (%.14g) yields invalid result", a, b);
+	return top / bottom;
+}
+
+static NUMBER VAR(ln)(NUMBER a)
+{
+	double tmp = log(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("ln(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+
+static NUMBER VAR(asind)(NUMBER a)
+{
+	double tmp = radians_to_degrees(asin(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("asind(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(acosd)(NUMBER a)
+{
+	double tmp = radians_to_degrees(acos(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("acosd(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(atand)(NUMBER a)
+{
+	double tmp = radians_to_degrees(atan(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("atand(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(asin)(NUMBER a)
+{
+	double tmp = asin(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("asin(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(acos)(NUMBER a)
+{
+	double tmp = acos(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("acos(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(atan)(NUMBER a)
+{
+  	double tmp = atan(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("atan(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(sinhd)(NUMBER a)
+{
+	double tmp = radians_to_degrees(sinh(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("sinhd(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(coshd)(NUMBER a)
+{
+	double tmp = radians_to_degrees(cosh(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("coshd(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(tanhd)(NUMBER a)
+{
+	double tmp = radians_to_degrees(tanh(a));
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("tanhd(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(sinh)(NUMBER a)
+{
+	double tmp = sinh(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("sinh(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(cosh)(NUMBER a)
+{
+	double tmp = cosh(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("cosh(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+static NUMBER VAR(tanh)(NUMBER a)
+{
+  	double tmp = tanh(a);
+	if unlikely(is_nan(*(long*)&tmp))
+		     throw_error_fmt("tanh(%.14g) yields invalid result", a);
+	return tmp;
+}
+
+
 
 static void VAR(times)(NUMBER n, BLOCK f)
 {
